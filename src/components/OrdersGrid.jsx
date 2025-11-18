@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import OrderCard from './OrderCard'
+import OrderModal from './OrderModal'
 
 const apiBase = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'
 
@@ -7,6 +8,7 @@ export default function OrdersGrid() {
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [selected, setSelected] = useState(null)
 
   const load = async () => {
     setLoading(true)
@@ -41,10 +43,14 @@ export default function OrdersGrid() {
             <div className="col-span-full text-sm text-slate-600">No orders yet. Create one above.</div>
           )}
           {orders.map((o) => (
-            <OrderCard key={o.id || o._id} order={o} />
+            <button key={o.id || o._id} onClick={() => setSelected(o)} className="text-left">
+              <OrderCard order={o} />
+            </button>
           ))}
         </div>
       </div>
+
+      <OrderModal open={!!selected} order={selected} onClose={() => setSelected(null)} />
     </section>
   )
 }
